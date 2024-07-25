@@ -19,7 +19,7 @@ class ParallelTaskRunner {
         $this.MaxCpuUsage = $cpuUsagePercentage
         $cpuCores = [Environment]::ProcessorCount
         $this.MaxThreads = [math]::Ceiling($cpuCores * ($cpuUsagePercentage / 100))
-        if ($this.RunspacePool -ne $null) {
+        if ($null -ne $this.RunspacePool) {
             $this.RunspacePool.Close()
             $this.RunspacePool.Dispose()
         }
@@ -48,7 +48,9 @@ class ParallelTaskRunner {
     [object[]]ExecuteTasks() {
         while ($this.Tasks.Count -gt 0 -or $this.CurrentThreads -gt 0) {
             $this.AdjustThreads()
-            foreach ($runspace in $this.Runspaces) {
+            # Create a copy of the Runspaces collection
+            $runspacesCopy = @($this.Runspaces)
+            foreach ($runspace in $runspacesCopy) {
                 if ($runspace.Pipeline.EndInvoke($runspace.Status)) {
                     $this.Results += $runspace.Pipeline.Streams.Output
                     $runspace.Pipeline.Dispose()

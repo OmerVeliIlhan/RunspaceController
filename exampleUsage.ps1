@@ -1,7 +1,5 @@
-﻿# UsageExample.ps1
-
-# Import the ControlFunctions script
-import-module "C:\code\PSParallelProcessing\ControlParalelRunner.ps1"
+﻿# Import the ControlFunctions script
+Import-Module "C:\code\PSParallelProcessing\ControlParalelRunner.ps1" -Force
 
 # Initialize the ParallelExecutor with 50% CPU usage
 Start-ParallelExecutor -CpuUsage 50
@@ -11,6 +9,7 @@ $tasks = 1..10
 $scriptBlock = {
     param ($task)
     Start-Sleep -Seconds (Get-Random -Minimum 1 -Maximum 3)
+    Write-Host "task"
     "Task $task completed"
 }
 

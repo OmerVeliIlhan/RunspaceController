@@ -1,4 +1,4 @@
-﻿import-module "C:\code\PSParallelProcessing\ParallelTaskRunner.psm1"
+﻿Import-Module "C:\code\PSParallelProcessing\ParallelTaskRunner.ps1" -Force
 
 # Global variable to hold the ParallelTaskRunner instance
 $global:ParallelExecutor = $null
