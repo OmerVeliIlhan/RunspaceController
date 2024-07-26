@@ -52,7 +52,13 @@ class ParallelTaskRunner {
             $runspacesCopy = @($this.Runspaces)
             foreach ($runspace in $runspacesCopy) {
                 if ($runspace.Pipeline.EndInvoke($runspace.Status)) {
-                    $this.Results += $runspace.Pipeline.Streams.Output
+                    $output = $runspace.Pipeline.Streams.Output
+                    if ($output.Count -gt 0) {
+                        $this.Results += $output
+                        Write-Host "Task completed: $($output | Out-String)"
+                    } else {
+                        Write-Host "Task completed with no output."
+                    }
                     $runspace.Pipeline.Dispose()
                     $this.Runspaces.Remove($runspace)
                     $this.CurrentThreads--
