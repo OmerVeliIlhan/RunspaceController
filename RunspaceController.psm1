@@ -14,10 +14,14 @@ function New-RunspacePool {
 function Start-Runspace {
     param (
         [System.Management.Automation.Runspaces.RunspacePool]$RunspacePool,
-        [scriptblock]$ScriptBlock
+        [scriptblock]$ScriptBlock,
+        [object[]]$ArgumentList
     )
 
     $powershell = [powershell]::Create().AddScript($ScriptBlock)
+    foreach ($arg in $ArgumentList) {
+        $powershell.AddArgument($arg) | Out-Null
+    }
     $powershell.RunspacePool = $RunspacePool
     $asyncResult = $powershell.BeginInvoke()
     return @{ PowerShell = $powershell; AsyncResult = $asyncResult }
@@ -32,9 +36,13 @@ function Get-RunspaceResult {
     $PowerShell = $RunspaceInfo.PowerShell
     $AsyncResult = $RunspaceInfo.AsyncResult
 
-    $result = $PowerShell.EndInvoke($AsyncResult)
-    $PowerShell.Dispose()
-    return $result
+    if ($PowerShell -and $AsyncResult) {
+        $result = $PowerShell.EndInvoke($AsyncResult)
+        $PowerShell.Dispose()
+        return $result
+    } else {
+        return "Error: Runspace did not execute properly."
+    }
 }
 
 # Close Runspace Pool
