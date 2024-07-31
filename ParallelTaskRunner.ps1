@@ -53,9 +53,12 @@ class ParallelTaskRunner {
             foreach ($runspace in $runspacesCopy) {
                 if ($runspace.Pipeline.EndInvoke($runspace.Status)) {
                     $output = $runspace.Pipeline.Streams.Output
+                    $errors = $runspace.Pipeline.Streams.Error
                     if ($output.Count -gt 0) {
                         $this.Results += $output
                         Write-Host "Task completed: $($output | Out-String)"
+                    } elseif ($errors.Count -gt 0) {
+                        Write-Host "Task completed with errors: $($errors | Out-String)"
                     } else {
                         Write-Host "Task completed with no output."
                     }

@@ -9,10 +9,10 @@ $tasks = 1..10
 $scriptBlock = {
     param ($task)
     Start-Sleep -Seconds (Get-Random -Minimum 1 -Maximum 3)
-    "Task $task completed"
+    return "Task $task completed after sleeping for a random time."
 }
 
-# Add tasks totasks to the ParallelExecutor
+# Add tasks to the ParallelExecutor
 Add-ParallelTasks -Tasks $tasks -ScriptBlock $scriptBlock
 
 # Execute tasks and get results
