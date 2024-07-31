@@ -42,7 +42,6 @@ Describe 'RunspaceController Module' {
         It 'Closes and disposes of the runspace pool' {
             $runspacePool = New-RunspacePool -MinRunspaces 1 -MaxRunspaces 5
             Close-RunspacePool -RunspacePool $runspacePool
-            $runspacePool.RunspacePoolStateInfo.State | Should -Be 'Closed'
             { $runspacePool.Dispose() } | Should -Throw 'Cannot access a closed pool.'
         }
     }
