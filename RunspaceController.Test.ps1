@@ -1,6 +1,4 @@
-﻿# RunspaceController.Tests.ps1
-
-Import-Module 'C:\code\RunspaceController\RunspaceController.psm1'
+﻿Import-Module 'C:\code\RunspaceController\RunspaceController.psm1'
 
 Describe 'RunspaceController Module' {
     Context 'New-RunspacePool' {
