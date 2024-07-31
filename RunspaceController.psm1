@@ -1,4 +1,4 @@
-﻿# Runspace Havuzu Oluşturma
+﻿# Create Runspace Pool
 function New-RunspacePool {
     param (
         [int]$MinRunspaces = 1,
@@ -10,25 +10,39 @@ function New-RunspacePool {
     return $runspacePool
 }
 
-# Runspace Oluşturma ve Başlatma
+# Create and Start Runspace
 function Start-Runspace {
     param (
         [System.Management.Automation.Runspaces.RunspacePool]$RunspacePool,
         [scriptblock]$ScriptBlock
     )
 
-    $runspace = [powershell]::Create().AddScript($ScriptBlock)
-    $runspace.RunspacePool = $RunspacePool
-    $runspace.BeginInvoke()
-    return $runspace
+    $powershell = [powershell]::Create().AddScript($ScriptBlock)
+    $powershell.RunspacePool = $RunspacePool
+    $asyncResult = $powershell.BeginInvoke()
+    return @{ PowerShell = $powershell; AsyncResult = $asyncResult }
 }
 
-# Runspace Sonuçlarını Alma
+# Get Runspace Results
 function Get-RunspaceResult {
     param (
-        [System.Management.Automation.PowerShell]$Runspace
+        [System.Collections.Hashtable]$RunspaceInfo
     )
 
-    $runspace.EndInvoke($runspace.BeginInvoke())
-    return $runspace.Streams
+    $PowerShell = $RunspaceInfo.PowerShell
+    $AsyncResult = $RunspaceInfo.AsyncResult
+
+    $result = $PowerShell.EndInvoke($AsyncResult)
+    $PowerShell.Dispose()
+    return $result
+}
+
+# Close Runspace Pool
+function Close-RunspacePool {
+    param (
+        [System.Management.Automation.Runspaces.RunspacePool]$RunspacePool
+    )
+
+    $RunspacePool.Close()
+    $RunspacePool.Dispose()
 }

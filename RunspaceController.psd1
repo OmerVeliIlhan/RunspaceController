@@ -3,7 +3,7 @@
     RootModule = 'RunspaceController.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.0.1'
+    ModuleVersion = '0.1.1'
 
     # ID used to uniquely identify this module
     GUID = '8bc19938-7b3e-4aa1-a2d0-0eedbabab5c2'
@@ -15,7 +15,7 @@
     CompanyName = ''
 
     # Description of the functionality provided by this module
-    Description = 'a PowerShell module for using Runspace.'
+    Description = 'PowerShell module to simplify runspace management.'
 
     # Functions to export from this module
     FunctionsToExport = @(
