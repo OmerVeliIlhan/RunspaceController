@@ -9,6 +9,22 @@ Describe 'RunspaceController Module' {
         }
     }
 
+    Context 'Set-RunspacePoolLimits' {
+        It 'Sets new min and max runspace counts by recreating the pool' {
+            $runspacePool = New-RunspacePool -MinRunspaces 1 -MaxRunspaces 5
+            $newRunspacePool = Set-RunspacePoolLimits -RunspacePool $runspacePool -MinRunspaces 2 -MaxRunspaces 10
+            $newRunspacePool.GetMinRunspaces() | Should -Be 2
+            $newRunspacePool.GetMaxRunspaces() | Should -Be 10
+            Close-RunspacePool -RunspacePool $newRunspacePool
+        }
+
+        It 'Throws an error if the runspace pool is not in an Opened state' {
+            $runspacePool = New-RunspacePool -MinRunspaces 1 -MaxRunspaces 5
+            Close-RunspacePool -RunspacePool $runspacePool
+            { Set-RunspacePoolLimits -RunspacePool $runspacePool -MinRunspaces 2 -MaxRunspaces 10 } | Should -Throw "Runspace pool must be in an Opened state to change limits."
+        }
+    }
+
     Context 'Start-Runspace' {
         It 'Starts a runspace and returns a PowerShell and AsyncResult' {
             $runspacePool = New-RunspacePool -MinRunspaces 1 -MaxRunspaces 5
@@ -40,7 +56,8 @@ Describe 'RunspaceController Module' {
         It 'Closes and disposes of the runspace pool' {
             $runspacePool = New-RunspacePool -MinRunspaces 1 -MaxRunspaces 5
             Close-RunspacePool -RunspacePool $runspacePool
-            { $runspacePool.Dispose() } | Should -Throw 'Cannot access a closed pool.'
+            $runspacePool.RunspacePoolStateInfo.State | Should -Be 'Closed'
+            { $runspacePool.Dispose() } | Should -Not -Throw
         }
     }
 

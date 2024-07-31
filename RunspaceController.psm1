@@ -10,6 +10,28 @@ function New-RunspacePool {
     return $runspacePool
 }
 
+# Set Min and Max Runspace Counts by recreating the pool
+function Set-RunspacePoolLimits {
+    param (
+        [System.Management.Automation.Runspaces.RunspacePool]$RunspacePool,
+        [int]$MinRunspaces,
+        [int]$MaxRunspaces
+    )
+
+    if ($RunspacePool.RunspacePoolStateInfo.State -ne 'Opened') {
+        throw "Runspace pool must be in an Opened state to change limits."
+    }
+
+    # Close and dispose of the old runspace pool
+    $RunspacePool.Close()
+    $RunspacePool.Dispose()
+
+    # Create and open a new runspace pool
+    $newRunspacePool = [runspacefactory]::CreateRunspacePool($MinRunspaces, $MaxRunspaces)
+    $newRunspacePool.Open()
+    return $newRunspacePool
+}
+
 # Create and Start Runspace
 function Start-Runspace {
     param (

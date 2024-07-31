@@ -9,7 +9,7 @@
     GUID = '8bc19938-7b3e-4aa1-a2d0-0eedbabab5c2'
 
     # Author of this module
-    Author = 'Ömer Veli İlhan'
+    Author = 'OmerVeliIlhan'
 
     # Company or vendor of this module
     CompanyName = ''
@@ -22,7 +22,8 @@
         'New-RunspacePool',
         'Start-Runspace',
         'Get-RunspaceResult',
-        'Close-RunspacePool'
+        'Close-RunspacePool',
+        'Set-RunspacePoolLimits'
     )
 
     # Cmdlets to export from this module
