@@ -1,13 +1,13 @@
-﻿# Runspace Havuzu Oluşturma
-$runspacePool = New-RunspacePool -MinRunspaces 1 -MaxRunspaces 5
+﻿Import-Module 'C:\code\RunspaceController\RunspaceController.psm1'
 
-# Runspace Başlatma
+$runspacePool = New-RunspacePool -MinRunspaces 1 -MaxRunspaces 5
 $scriptBlock = {
     Start-Sleep -Seconds 2
     "Runspace çalıştı!"
 }
 $runspace = Start-Runspace -RunspacePool $runspacePool -ScriptBlock $scriptBlock
-
-# Sonuçları Alma
 $results = Get-RunspaceResult -Runspace $runspace
 $results
+
+# Runspace havuzunu kapatma
+Close-RunspacePool -RunspacePool $runspacePool
